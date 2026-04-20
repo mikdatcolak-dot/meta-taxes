@@ -213,15 +213,7 @@ function CreditAccountDetail({ onSelectAdAccount }) {
           {/* Right: meta + actions */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8 }}>
             <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={() => setTaxModalOpen(true)} style={{
-                height: 36, padding: '0 14px', background: '#FFF8E1', border: '1.5px solid #F3CD02',
-                borderRadius: 8, fontFamily: "'Red Hat Display', sans-serif", fontSize: 13, fontWeight: 600,
-                color: '#705E00', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6,
-              }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#705E00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 14l2 2 4-4"/><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
-                Tax Reserve Details
-              </button>
-              <button style={{
+<button style={{
                 height: 36, padding: '0 16px', background: COLORS.primary, color: '#fff',
                 border: 'none', borderRadius: 8, fontFamily: "'Red Hat Display', sans-serif",
                 fontSize: 13, fontWeight: 600, cursor: 'pointer',
