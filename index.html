@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rockads — Meta Tax Design</title>
+  <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body, #root { height: 100%; }
+    body { font-family: 'Red Hat Display', sans-serif; background: #F7F9FB; overflow: hidden; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #D3D7E6; border-radius: 99px; }
+    input, button, select, textarea { font-family: inherit; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" src="Components.jsx"></script>
+<script type="text/babel" src="CreditAccountDetail.jsx"></script>
+<script type="text/babel" src="AdAccountDetail.jsx"></script>
+
+<script type="text/babel">
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "startScreen": "credit-account-detail"
+}/*EDITMODE-END*/;
+
+const NAV_ITEMS = [
+  { id: 'ad-accounts', label: 'Ad Accounts', icon: 'accounts' },
+  { id: 'credit-accounts', label: 'Credit Accounts', icon: 'credit' },
+  { id: 'clients', label: 'Clients', icon: 'clients' },
+  { id: 'automations', label: 'Ad Automations', icon: 'automations' },
+  null,
+  { id: 'ads-manager', label: 'Ads Manager', icon: 'ads', badge: 'New' },
+  { id: 'billing', label: 'Billing', icon: 'billing' },
+  { id: 'reports', label: 'Reports', icon: 'reports' },
+  { id: 'settings', label: 'Settings', icon: 'settings' },
+];
+
+const SCREEN_META = {
+  'credit-account-detail': { title: 'Account Detail', breadcrumb: 'Credit Accounts', nav: 'credit-accounts' },
+  'ad-account-detail':     { title: 'Ad Account Detail', breadcrumb: 'Ad Accounts', nav: 'ad-accounts' },
+};
+
+function AppShell() {
+  const saved = (() => { try { return JSON.parse(localStorage.getItem('rockads_tax_state') || '{}'); } catch { return {}; } })();
+  const [screen, setScreen] = React.useState(saved.screen || TWEAK_DEFAULTS.startScreen);
+  const [tweaksVisible, setTweaksVisible] = React.useState(false);
+
+  const persist = s => localStorage.setItem('rockads_tax_state', JSON.stringify({ screen: s }));
+
+  const navigate = s => { setScreen(s); persist(s); };
+
+  React.useEffect(() => {
+    const handler = e => {
+      if (e.data?.type === '__activate_edit_mode') setTweaksVisible(true);
+      if (e.data?.type === '__deactivate_edit_mode') setTweaksVisible(false);
+    };
+    window.addEventListener('message', handler);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', handler);
+  }, []);
+
+  const meta = SCREEN_META[screen] || { title: screen, breadcrumb: null, nav: screen };
+  const activeNav = meta.nav;
+
+  const renderContent = () => {
+    if (screen === 'credit-account-detail') return <CreditAccountDetail />;
+    if (screen === 'ad-account-detail') return <AdAccountDetail />;
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#898FA5', fontSize: 14 }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: 32, marginBottom: 8 }}>🚧</div>
+          <div style={{ fontWeight: 600, color: '#4B5061' }}>{screen}</div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div style={{ display: 'flex', height: '100%', fontFamily: "'Red Hat Display', sans-serif" }}>
+      {/* Sidebar */}
+      <div style={{ width: 220, minWidth: 220, height: '100%', background: '#fff', borderRight: '1px solid #E5E9EF', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
+        <div style={{ padding: '16px 20px 14px', borderBottom: '1px solid #E5E9EF' }}>
+          <div style={{ fontSize: 20, fontWeight: 700, color: '#007CE1', letterSpacing: '-0.02em' }}>rockads</div>
+        </div>
+        <nav style={{ flex: 1, overflowY: 'auto', padding: '8px 0' }}>
+          {NAV_ITEMS.map((item, i) => {
+            if (!item) return <div key={i} style={{ height: 1, background: '#E5E9EF', margin: '6px 0' }} />;
+            const isActive = activeNav === item.id;
+            return (
+              <div key={item.id} onClick={() => {
+                if (item.id === 'ad-accounts') navigate('ad-account-detail');
+                else if (item.id === 'credit-accounts') navigate('credit-account-detail');
+                else navigate(item.id);
+              }} style={{
+                display: 'flex', alignItems: 'center', gap: 10,
+                padding: '9px 20px', fontSize: 13, fontWeight: isActive ? 600 : 500,
+                color: isActive ? '#007CE1' : '#4B5061',
+                background: isActive ? '#E5F1FF' : 'transparent',
+                borderLeft: isActive ? '3px solid #007CE1' : '3px solid transparent',
+                cursor: 'pointer', userSelect: 'none',
+              }}>
+                <Icon name={item.icon} size={15} color={isActive ? '#007CE1' : '#747A8E'} />
+                {item.label}
+                {item.badge && <span style={{ marginLeft: 'auto', fontSize: 9, fontWeight: 700, background: '#E13023', color: '#fff', borderRadius: 4, padding: '2px 5px' }}>{item.badge}</span>}
+              </div>
+            );
+          })}
+        </nav>
+        <div style={{ borderTop: '1px solid #E5E9EF', padding: '12px 20px' }}>
+          <div style={{ fontSize: 11, color: '#898FA5' }}>Rockads v2.4.1</div>
+        </div>
+      </div>
+
+      {/* Main */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        {/* Topbar */}
+        <div style={{ height: 56, background: '#fff', borderBottom: '1px solid #E5E9EF', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            {meta.breadcrumb && <>
+              <span style={{ fontSize: 14, color: '#747A8E', cursor: 'pointer' }} onClick={() => navigate(meta.nav === 'ad-accounts' ? 'ad-account-detail' : 'credit-account-detail')}>{meta.breadcrumb}</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C0C7DC" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
+            </>}
+            <span style={{ fontSize: 16, fontWeight: 700, color: '#151B26' }}>{meta.title}</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            {/* Screen switcher pills */}
+            <div style={{ display: 'flex', gap: 6, background: '#F7F9FB', borderRadius: 8, padding: 4, border: '1px solid #E5E9EF' }}>
+              {[['credit-account-detail', 'Credit Account'], ['ad-account-detail', 'Ad Account']].map(([s, label]) => (
+                <button key={s} onClick={() => navigate(s)} style={{
+                  height: 28, padding: '0 12px', borderRadius: 6, border: 'none',
+                  background: screen === s ? '#fff' : 'transparent',
+                  boxShadow: screen === s ? '0 1px 3px rgba(21,27,38,0.10)' : 'none',
+                  color: screen === s ? '#007CE1' : '#747A8E',
+                  fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: "'Red Hat Display', sans-serif",
+                  transition: 'all 0.15s',
+                }}>{label}</button>
+              ))}
+            </div>
+            <div style={{ position: 'relative', cursor: 'pointer' }}>
+              <Icon name="bell" size={20} color="#747A8E" />
+              <div style={{ position: 'absolute', top: -3, right: -3, width: 8, height: 8, background: '#E13023', borderRadius: '50%', border: '1.5px solid #fff' }} />
+            </div>
+            <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#F3CD02', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: '#705E00', cursor: 'pointer' }}>R</div>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div style={{ flex: 1, overflow: 'hidden' }}>
+          {renderContent()}
+        </div>
+      </div>
+
+      {/* Tweaks panel */}
+      {tweaksVisible && (
+        <div style={{
+          position: 'fixed', bottom: 20, right: 20, width: 260,
+          background: '#fff', borderRadius: 12, boxShadow: '0 8px 32px rgba(21,27,38,0.18)',
+          border: '1px solid #E5E9EF', padding: 20, fontFamily: "'Red Hat Display', sans-serif", zIndex: 9999,
+        }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: '#151B26', marginBottom: 16 }}>Tweaks</div>
+          <div style={{ fontSize: 12, fontWeight: 600, color: '#747A8E', marginBottom: 8 }}>Active Screen</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {[['credit-account-detail', 'Credit Account Detail'], ['ad-account-detail', 'Ad Account Detail']].map(([s, label]) => (
+              <button key={s} onClick={() => { navigate(s); window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { startScreen: s } }, '*'); }} style={{
+                height: 36, borderRadius: 8,
+                border: `1.5px solid ${screen === s ? '#007CE1' : '#E5E9EF'}`,
+                background: screen === s ? '#E5F1FF' : '#fff',
+                color: screen === s ? '#007CE1' : '#4B5061',
+                fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: "'Red Hat Display', sans-serif",
+              }}>{label}</button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<AppShell />);
+</script>
+</body>
+</html>
