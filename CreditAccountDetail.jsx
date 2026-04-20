@@ -40,10 +40,116 @@ function fmt(n) {
   return sign + '$' + Math.abs(n).toFixed(2).replace('.', ',');
 }
 
+const BLOCK_HISTORY = [
+  { date: '19.04.2026', time: '14:55', type: 'Ad Account Transfer', account: 'Rockads B2B – CR', accountId: '32149134619789', change: +8.00, balance: 487.35, note: 'Meta Ad Tax — DE 3% + AT 5% on $100 spend each' },
+  { date: '18.04.2026', time: '11:30', type: 'Ad Account Transfer', account: 'Test – GMT+3 – USD', accountId: '1448789212354931', change: +12.50, balance: 479.35, note: 'Tax reserve increase on $100 transfer' },
+  { date: '17.04.2026', time: '09:12', type: 'Ad Spend', account: 'Test – GMT+3 – USD', accountId: '1448789212354931', change: -2.00, balance: 466.85, note: 'Meta Ad Tax — GB 2% on $100 spend' },
+  { date: '10.04.2026', time: '16:40', type: 'Ad Account Transfer', account: 'Test – GMT+3 – USD', accountId: '1448789212354931', change: +25.00, balance: 468.85, note: 'Tax reserve increase on $200 transfer to FR' },
+  { date: '03.04.2026', time: '10:05', type: 'Ad Spend', account: 'Test – GMT+3 – USD', accountId: '1448789212354931', change: -3.00, balance: 443.85, note: 'Meta Ad Tax — NL 2% on $150 spend' },
+  { date: '02.02.2026', time: '22:23', type: 'Withdraw', account: 'Test – GMT+3 – USD', accountId: '1448789212354931', change: -18.00, balance: 446.85, note: 'Reserve released on withdrawal from ad account' },
+  { date: '02.02.2026', time: '22:22', type: 'Ad Account Transfer', account: 'Test – GMT+3 – USD', accountId: '1448789212354931', change: +18.00, balance: 464.85, note: 'Tax reserve increase on $100 transfer' },
+  { date: '15.01.2026', time: '15:38', type: 'Ad Account Transfer', account: 'Test – GMT+3 – USD', accountId: '1448789212354931', change: +4.50, balance: 446.85, note: 'Tax reserve increase on $30 transfer' },
+  { date: '01.01.2026', time: '09:00', type: 'Ad Spend', account: 'Rockads B2B – CR', accountId: '32149134619789', change: -4.00, balance: 442.35, note: 'Meta Ad Tax — AT 5% on $80 spend' },
+];
+
+const TYPE_CONFIG = {
+  'Ad Account Transfer': { icon: '↑', color: '#DC2626', bg: '#FEE2E2', label: 'Transfer' },
+  'Ad Spend':            { icon: '↓', color: '#16A34A', bg: '#DCFCE7', label: 'Ad Spend' },
+  'Withdraw':            { icon: '↓', color: '#16A34A', bg: '#DCFCE7', label: 'Withdraw' },
+};
+
+function BlockHistoryModal({ onClose, blockedTax, available }) {
+  return (
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(21,27,38,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={onClose}>
+      <div style={{ background: '#fff', borderRadius: 12, width: 600, maxHeight: '80vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 50px rgba(21,27,38,0.25)', fontFamily: "'Red Hat Display', sans-serif" }} onClick={e => e.stopPropagation()}>
+        {/* Header */}
+        <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid #E5E9EF', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: '#151B26' }}>Block History</div>
+            <div style={{ fontSize: 12, color: '#747A8E', marginTop: 2 }}>Tax reserve changes — Main Wallet · ID: 645722</div>
+          </div>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
+            <Icon name="close" size={18} color="#747A8E" />
+          </button>
+        </div>
+
+        {/* Summary */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12, padding: '16px 24px', borderBottom: '1px solid #E5E9EF' }}>
+          <div style={{ background: '#FFF8E1', borderRadius: 8, padding: '12px 14px' }}>
+            <div style={{ fontSize: 11, color: '#705E00', marginBottom: 4, fontWeight: 600 }}>Current Block</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#B45309' }}>${blockedTax.toFixed(2)}</div>
+          </div>
+          <div style={{ background: '#F7F9FB', borderRadius: 8, padding: '12px 14px' }}>
+            <div style={{ fontSize: 11, color: '#747A8E', marginBottom: 4, fontWeight: 600 }}>Available</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#151B26' }}>${available.toFixed(2)}</div>
+          </div>
+          <div style={{ background: '#F7F9FB', borderRadius: 8, padding: '12px 14px' }}>
+            <div style={{ fontSize: 11, color: '#747A8E', marginBottom: 4, fontWeight: 600 }}>Total Entries</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#151B26' }}>{BLOCK_HISTORY.length}</div>
+          </div>
+        </div>
+
+        {/* Legend */}
+        <div style={{ display: 'flex', gap: 16, padding: '10px 24px', borderBottom: '1px solid #E5E9EF', fontSize: 11, color: '#747A8E' }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+            <span style={{ width: 16, height: 16, borderRadius: 4, background: '#FEE2E2', color: '#DC2626', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700 }}>↑</span>
+            Block arttı (Transfer)
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+            <span style={{ width: 16, height: 16, borderRadius: 4, background: '#DCFCE7', color: '#16A34A', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700 }}>↓</span>
+            Block azaldı (Spend / Withdraw)
+          </span>
+        </div>
+
+        {/* History list */}
+        <div style={{ overflowY: 'auto', flex: 1 }}>
+          {BLOCK_HISTORY.map((entry, i) => {
+            const isIncrease = entry.change > 0;
+            const cfg = TYPE_CONFIG[entry.type] || TYPE_CONFIG['Ad Account Transfer'];
+            return (
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 14, padding: '14px 24px', borderBottom: '1px solid #F7F9FB' }}>
+                {/* Icon */}
+                <div style={{ width: 32, height: 32, borderRadius: 8, background: isIncrease ? '#FEE2E2' : '#DCFCE7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 }}>
+                  <span style={{ fontSize: 14, fontWeight: 800, color: isIncrease ? '#DC2626' : '#16A34A' }}>{isIncrease ? '↑' : '↓'}</span>
+                </div>
+
+                {/* Main content */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: '#151B26' }}>{entry.type}</span>
+                      <span style={{ marginLeft: 8, fontSize: 11, fontWeight: 600, padding: '2px 7px', borderRadius: 4, background: cfg.bg, color: cfg.color }}>{cfg.label}</span>
+                    </div>
+                    <div style={{ textAlign: 'right', flexShrink: 0, marginLeft: 16 }}>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: isIncrease ? '#DC2626' : '#16A34A', fontFamily: "'Inter', sans-serif" }}>
+                        {isIncrease ? '+' : ''}{entry.change < 0 ? '-' : ''}${Math.abs(entry.change).toFixed(2)}
+                      </div>
+                      <div style={{ fontSize: 11, color: '#747A8E', marginTop: 2, fontFamily: "'Inter', sans-serif" }}>Block: ${entry.balance.toFixed(2)}</div>
+                    </div>
+                  </div>
+                  <div style={{ fontSize: 11, color: '#747A8E', marginTop: 3 }}>{entry.account} · <span style={{ fontFamily: "'Inter', sans-serif" }}>{entry.accountId}</span></div>
+                  <div style={{ fontSize: 11, color: '#898FA5', marginTop: 4, lineHeight: 1.5 }}>{entry.note}</div>
+                </div>
+
+                {/* Date */}
+                <div style={{ textAlign: 'right', flexShrink: 0, fontSize: 11, color: '#898FA5', fontFamily: "'Inter', sans-serif", marginTop: 2 }}>
+                  <div>{entry.date}</div>
+                  <div>{entry.time}</div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function CreditAccountDetail({ onSelectAdAccount }) {
   const [activeTab, setActiveTab] = React.useState('Transactions');
   const [filter, setFilter] = React.useState('all');
   const [taxModalOpen, setTaxModalOpen] = React.useState(false);
+  const [blockHistoryOpen, setBlockHistoryOpen] = React.useState(false);
 
   const totalBalance = 9760.98;
   const blockedTax = 487.35;
@@ -80,7 +186,7 @@ function CreditAccountDetail({ onSelectAdAccount }) {
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
                 <div style={{ fontSize: 12, color: '#705E00', fontWeight: 500 }}>Blocked (Tax Reserve)</div>
-                <span onClick={() => setTaxModalOpen(true)} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 16, height: 16, borderRadius: '50%', background: '#F3CD02', color: '#705E00', fontSize: 10, fontWeight: 800, cursor: 'pointer', userSelect: 'none' }}>?</span>
+                <span onClick={() => setBlockHistoryOpen(true)} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 16, height: 16, borderRadius: '50%', background: '#F3CD02', color: '#705E00', fontSize: 10, fontWeight: 800, cursor: 'pointer', userSelect: 'none' }}>↕</span>
               </div>
               <div style={{ fontSize: 22, fontWeight: 700, color: '#705E00' }}>
                 ${blockedTax.toLocaleString('tr-TR', { minimumFractionDigits: 2 }).replace('.', ',')}
@@ -227,6 +333,9 @@ function CreditAccountDetail({ onSelectAdAccount }) {
           <div style={{ padding: 40, textAlign: 'center', color: COLORS.neutral400, fontSize: 13 }}>No bank transfers to display.</div>
         )}
       </div>
+
+      {/* ── BLOCK HISTORY MODAL ── */}
+      {blockHistoryOpen && <BlockHistoryModal onClose={() => setBlockHistoryOpen(false)} blockedTax={blockedTax} available={available} />}
 
       {/* ── TAX RESERVE MODAL ── */}
       {taxModalOpen && (
