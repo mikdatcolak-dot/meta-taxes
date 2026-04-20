@@ -40,28 +40,36 @@ function fmt(n) {
   return sign + '$' + Math.abs(n).toFixed(2).replace('.', ',');
 }
 
+// 5% of transaction amount rule:
+// Ad Account Transfer → block +5%  (reserve grows)
+// Ad Spend           → block -5%  (reserve released on spend)
+// Withdraw           → block -5%  (reserve released on withdrawal)
 const BLOCK_HISTORY = [
-  { date: '19.04.2026', time: '14:55', type: 'Ad Account Transfer', account: 'Rockads B2B – CR', accountId: '32149134619789', change: +8.00, balance: 487.35, note: 'Meta Ad Tax — DE 3% + AT 5% on $100 spend each' },
-  { date: '18.04.2026', time: '11:30', type: 'Ad Account Transfer', account: 'Test – GMT+3 – USD', accountId: '1448789212354931', change: +12.50, balance: 479.35, note: 'Tax reserve increase on $100 transfer' },
-  { date: '17.04.2026', time: '09:12', type: 'Ad Spend', account: 'Test – GMT+3 – USD', accountId: '1448789212354931', change: -2.00, balance: 466.85, note: 'Meta Ad Tax — GB 2% on $100 spend' },
-  { date: '10.04.2026', time: '16:40', type: 'Ad Account Transfer', account: 'Test – GMT+3 – USD', accountId: '1448789212354931', change: +25.00, balance: 468.85, note: 'Tax reserve increase on $200 transfer to FR' },
-  { date: '03.04.2026', time: '10:05', type: 'Ad Spend', account: 'Test – GMT+3 – USD', accountId: '1448789212354931', change: -3.00, balance: 443.85, note: 'Meta Ad Tax — NL 2% on $150 spend' },
-  { date: '02.02.2026', time: '22:23', type: 'Withdraw', account: 'Test – GMT+3 – USD', accountId: '1448789212354931', change: -18.00, balance: 446.85, note: 'Reserve released on withdrawal from ad account' },
-  { date: '02.02.2026', time: '22:22', type: 'Ad Account Transfer', account: 'Test – GMT+3 – USD', accountId: '1448789212354931', change: +18.00, balance: 464.85, note: 'Tax reserve increase on $100 transfer' },
-  { date: '15.01.2026', time: '15:38', type: 'Ad Account Transfer', account: 'Test – GMT+3 – USD', accountId: '1448789212354931', change: +4.50, balance: 446.85, note: 'Tax reserve increase on $30 transfer' },
-  { date: '01.01.2026', time: '09:00', type: 'Ad Spend', account: 'Rockads B2B – CR', accountId: '32149134619789', change: -4.00, balance: 442.35, note: 'Meta Ad Tax — AT 5% on $80 spend' },
+  { date: '19.04.2026', time: '14:55', type: 'Ad Spend',            account: 'Rockads B2B – CR',      accountId: '32149134619789',   txAmount: 100.00, change: -5.00,  balance: 487.35 },
+  { date: '19.04.2026', time: '14:50', type: 'Ad Spend',            account: 'Rockads B2B – CR',      accountId: '32149134619789',   txAmount: 100.00, change: -5.00,  balance: 492.35 },
+  { date: '18.04.2026', time: '11:30', type: 'Ad Account Transfer', account: 'Test – GMT+3 – USD',    accountId: '1448789212354931', txAmount: 100.00, change: +5.00,  balance: 497.35 },
+  { date: '17.04.2026', time: '09:12', type: 'Ad Spend',            account: 'Test – GMT+3 – USD',    accountId: '1448789212354931', txAmount: 100.00, change: -5.00,  balance: 492.35 },
+  { date: '10.04.2026', time: '16:40', type: 'Ad Account Transfer', account: 'Test – GMT+3 – USD',    accountId: '1448789212354931', txAmount: 200.00, change: +10.00, balance: 497.35 },
+  { date: '03.04.2026', time: '10:05', type: 'Ad Spend',            account: 'Test – GMT+3 – USD',    accountId: '1448789212354931', txAmount: 150.00, change: -7.50,  balance: 487.35 },
+  { date: '28.03.2026', time: '09:00', type: 'Ad Spend',            account: 'Test – GMT+3 – USD',    accountId: '1448789212354931', txAmount: 340.00, change: -17.00, balance: 494.85 },
+  { date: '15.03.2026', time: '14:20', type: 'Ad Spend',            account: 'Rockads B2B – CR',      accountId: '32149134619789',   txAmount: 500.00, change: -25.00, balance: 511.85 },
+  { date: '01.03.2026', time: '10:30', type: 'Ad Spend',            account: 'Rockads B2B – CR',      accountId: '32149134619789',   txAmount: 80.00,  change: -4.00,  balance: 536.85 },
+  { date: '02.02.2026', time: '22:23', type: 'Withdraw',            account: 'Test – GMT+3 – USD',    accountId: '1448789212354931', txAmount: 100.00, change: -5.00,  balance: 540.85 },
+  { date: '02.02.2026', time: '22:22', type: 'Ad Account Transfer', account: 'Test – GMT+3 – USD',    accountId: '1448789212354931', txAmount: 100.00, change: +5.00,  balance: 545.85 },
+  { date: '15.01.2026', time: '15:38', type: 'Ad Account Transfer', account: 'Test – GMT+3 – USD',    accountId: '1448789212354931', txAmount: 30.00,  change: +1.50,  balance: 540.85 },
 ];
 
 const TYPE_CONFIG = {
-  'Ad Account Transfer': { icon: '↑', color: '#DC2626', bg: '#FEE2E2', label: 'Transfer' },
-  'Ad Spend':            { icon: '↓', color: '#16A34A', bg: '#DCFCE7', label: 'Ad Spend' },
-  'Withdraw':            { icon: '↓', color: '#16A34A', bg: '#DCFCE7', label: 'Withdraw' },
+  'Ad Account Transfer': { color: '#DC2626', bg: '#FEE2E2' },
+  'Ad Spend':            { color: '#16A34A', bg: '#DCFCE7' },
+  'Withdraw':            { color: '#16A34A', bg: '#DCFCE7' },
 };
 
 function BlockHistoryModal({ onClose, blockedTax, available }) {
   return (
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(21,27,38,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={onClose}>
-      <div style={{ background: '#fff', borderRadius: 12, width: 600, maxHeight: '80vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 50px rgba(21,27,38,0.25)', fontFamily: "'Red Hat Display', sans-serif" }} onClick={e => e.stopPropagation()}>
+      <div style={{ background: '#fff', borderRadius: 12, width: 660, maxHeight: '82vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 50px rgba(21,27,38,0.25)', fontFamily: "'Red Hat Display', sans-serif" }} onClick={e => e.stopPropagation()}>
+
         {/* Header */}
         <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid #E5E9EF', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
@@ -73,14 +81,14 @@ function BlockHistoryModal({ onClose, blockedTax, available }) {
           </button>
         </div>
 
-        {/* Summary */}
+        {/* Summary cards */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12, padding: '16px 24px', borderBottom: '1px solid #E5E9EF' }}>
           <div style={{ background: '#FFF8E1', borderRadius: 8, padding: '12px 14px' }}>
             <div style={{ fontSize: 11, color: '#705E00', marginBottom: 4, fontWeight: 600 }}>Current Block</div>
             <div style={{ fontSize: 20, fontWeight: 700, color: '#B45309' }}>${blockedTax.toFixed(2)}</div>
           </div>
           <div style={{ background: '#F7F9FB', borderRadius: 8, padding: '12px 14px' }}>
-            <div style={{ fontSize: 11, color: '#747A8E', marginBottom: 4, fontWeight: 600 }}>Available</div>
+            <div style={{ fontSize: 11, color: '#747A8E', marginBottom: 4, fontWeight: 600 }}>Available Balance</div>
             <div style={{ fontSize: 20, fontWeight: 700, color: '#151B26' }}>${available.toFixed(2)}</div>
           </div>
           <div style={{ background: '#F7F9FB', borderRadius: 8, padding: '12px 14px' }}>
@@ -89,52 +97,52 @@ function BlockHistoryModal({ onClose, blockedTax, available }) {
           </div>
         </div>
 
-        {/* Legend */}
-        <div style={{ display: 'flex', gap: 16, padding: '10px 24px', borderBottom: '1px solid #E5E9EF', fontSize: 11, color: '#747A8E' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-            <span style={{ width: 16, height: 16, borderRadius: 4, background: '#FEE2E2', color: '#DC2626', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700 }}>↑</span>
-            Block arttı (Transfer)
-          </span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-            <span style={{ width: 16, height: 16, borderRadius: 4, background: '#DCFCE7', color: '#16A34A', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700 }}>↓</span>
-            Block azaldı (Spend / Withdraw)
-          </span>
+        {/* Table header */}
+        <div style={{ display: 'grid', gridTemplateColumns: '32px 1fr 90px 90px 100px', gap: 12, padding: '8px 24px', background: '#F7F9FB', borderBottom: '1px solid #E5E9EF', alignItems: 'center' }}>
+          <div />
+          <div style={{ fontSize: 10, fontWeight: 700, color: '#747A8E', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Transaction</div>
+          <div style={{ fontSize: 10, fontWeight: 700, color: '#747A8E', textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'right' }}>Tx Amount</div>
+          <div style={{ fontSize: 10, fontWeight: 700, color: '#747A8E', textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'right' }}>Change</div>
+          <div style={{ fontSize: 10, fontWeight: 700, color: '#B45309', textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'right', background: '#FFF8E1', borderRadius: 4, padding: '3px 8px' }}>Block Balance</div>
         </div>
 
-        {/* History list */}
+        {/* History rows */}
         <div style={{ overflowY: 'auto', flex: 1 }}>
           {BLOCK_HISTORY.map((entry, i) => {
             const isIncrease = entry.change > 0;
             const cfg = TYPE_CONFIG[entry.type] || TYPE_CONFIG['Ad Account Transfer'];
             return (
-              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 14, padding: '14px 24px', borderBottom: '1px solid #F7F9FB' }}>
-                {/* Icon */}
-                <div style={{ width: 32, height: 32, borderRadius: 8, background: isIncrease ? '#FEE2E2' : '#DCFCE7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 }}>
+              <div key={i} style={{ display: 'grid', gridTemplateColumns: '32px 1fr 90px 90px 100px', gap: 12, padding: '12px 24px', borderBottom: '1px solid #F7F9FB', alignItems: 'center' }}>
+                {/* Direction icon */}
+                <div style={{ width: 32, height: 32, borderRadius: 8, background: isIncrease ? '#FEE2E2' : '#DCFCE7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <span style={{ fontSize: 14, fontWeight: 800, color: isIncrease ? '#DC2626' : '#16A34A' }}>{isIncrease ? '↑' : '↓'}</span>
                 </div>
 
-                {/* Main content */}
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <div>
-                      <span style={{ fontSize: 13, fontWeight: 600, color: '#151B26' }}>{entry.type}</span>
-                      <span style={{ marginLeft: 8, fontSize: 11, fontWeight: 600, padding: '2px 7px', borderRadius: 4, background: cfg.bg, color: cfg.color }}>{cfg.label}</span>
-                    </div>
-                    <div style={{ textAlign: 'right', flexShrink: 0, marginLeft: 16 }}>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: isIncrease ? '#DC2626' : '#16A34A', fontFamily: "'Inter', sans-serif" }}>
-                        {isIncrease ? '+' : ''}{entry.change < 0 ? '-' : ''}${Math.abs(entry.change).toFixed(2)}
-                      </div>
-                      <div style={{ fontSize: 11, color: '#747A8E', marginTop: 2, fontFamily: "'Inter', sans-serif" }}>Block: ${entry.balance.toFixed(2)}</div>
-                    </div>
+                {/* Type + account + date */}
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 2 }}>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: '#151B26' }}>{entry.type}</span>
+                    <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 4, background: cfg.bg, color: cfg.color }}>{entry.type === 'Ad Account Transfer' ? 'Transfer' : entry.type === 'Ad Spend' ? 'Spend' : 'Withdraw'}</span>
                   </div>
-                  <div style={{ fontSize: 11, color: '#747A8E', marginTop: 3 }}>{entry.account} · <span style={{ fontFamily: "'Inter', sans-serif" }}>{entry.accountId}</span></div>
-                  <div style={{ fontSize: 11, color: '#898FA5', marginTop: 4, lineHeight: 1.5 }}>{entry.note}</div>
+                  <div style={{ fontSize: 11, color: '#747A8E', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {entry.account} · <span style={{ fontFamily: "'Inter', sans-serif" }}>{entry.accountId}</span>
+                  </div>
+                  <div style={{ fontSize: 10, color: '#898FA5', marginTop: 1, fontFamily: "'Inter', sans-serif" }}>{entry.date} {entry.time}</div>
                 </div>
 
-                {/* Date */}
-                <div style={{ textAlign: 'right', flexShrink: 0, fontSize: 11, color: '#898FA5', fontFamily: "'Inter', sans-serif", marginTop: 2 }}>
-                  <div>{entry.date}</div>
-                  <div>{entry.time}</div>
+                {/* Tx Amount */}
+                <div style={{ textAlign: 'right', fontSize: 13, color: '#4B5061', fontFamily: "'Inter', sans-serif" }}>
+                  ${entry.txAmount.toFixed(2)}
+                </div>
+
+                {/* Change */}
+                <div style={{ textAlign: 'right', fontSize: 13, fontWeight: 700, color: isIncrease ? '#DC2626' : '#16A34A', fontFamily: "'Inter', sans-serif" }}>
+                  {isIncrease ? '+' : '-'}${Math.abs(entry.change).toFixed(2)}
+                </div>
+
+                {/* Block Balance */}
+                <div style={{ textAlign: 'right', fontSize: 13, fontWeight: 700, color: '#B45309', fontFamily: "'Inter', sans-serif", background: '#FFFBEB', borderRadius: 6, padding: '4px 8px' }}>
+                  ${entry.balance.toFixed(2)}
                 </div>
               </div>
             );
