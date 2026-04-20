@@ -340,62 +340,46 @@ function CreditAccountDetail({ onSelectAdAccount }) {
       {/* ── TAX RESERVE MODAL ── */}
       {taxModalOpen && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(21,27,38,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setTaxModalOpen(false)}>
-          <div style={{ background: '#fff', borderRadius: 12, padding: 28, width: 520, boxShadow: '0 20px 50px rgba(21,27,38,0.25)', fontFamily: "'Red Hat Display', sans-serif" }} onClick={e => e.stopPropagation()}>
+          <div style={{ background: '#fff', borderRadius: 12, padding: 28, width: 460, boxShadow: '0 20px 50px rgba(21,27,38,0.25)', fontFamily: "'Red Hat Display', sans-serif" }} onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
               <div>
-                <div style={{ fontSize: 16, fontWeight: 700, color: COLORS.neutral900 }}>Tax Reserve Breakdown</div>
-                <div style={{ fontSize: 12, color: COLORS.neutral500, marginTop: 2 }}>Main Wallet · ID: 645722</div>
+                <div style={{ fontSize: 16, fontWeight: 700, color: COLORS.neutral900 }}>Meta Ad Tax Rates</div>
+                <div style={{ fontSize: 12, color: COLORS.neutral500, marginTop: 2 }}>Country-based rates applied to ad spend</div>
               </div>
               <button onClick={() => setTaxModalOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
                 <Icon name="close" size={18} color={COLORS.neutral500} />
               </button>
             </div>
 
-            {/* Reserve summary */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
-              <div style={{ background: COLORS.neutral100, borderRadius: 8, padding: 14 }}>
-                <div style={{ fontSize: 11, color: COLORS.neutral500, marginBottom: 4 }}>Total Blocked</div>
-                <div style={{ fontSize: 22, fontWeight: 700, color: '#705E00' }}>${blockedTax.toFixed(2)}</div>
-              </div>
-              <div style={{ background: COLORS.neutral100, borderRadius: 8, padding: 14 }}>
-                <div style={{ fontSize: 11, color: COLORS.neutral500, marginBottom: 4 }}>Available Balance</div>
-                <div style={{ fontSize: 22, fontWeight: 700, color: COLORS.neutral900 }}>${available.toFixed(2)}</div>
-              </div>
-            </div>
-
-            {/* Per-country breakdown */}
-            <div style={{ marginBottom: 16 }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.neutral500, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10 }}>Meta Tax Rates by Country</div>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                  <tr>
-                    {['Country', 'Tax Rate', 'Deducted (This Month)'].map(h => (
-                      <th key={h} style={{ fontSize: 11, fontWeight: 600, color: COLORS.neutral500, textAlign: 'left', padding: '6px 10px', background: COLORS.neutral100, borderBottom: `1px solid ${COLORS.neutral200}` }}>{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {taxBreakdown.map(row => (
-                    <tr key={row.code} style={{ borderBottom: `1px solid ${COLORS.neutral100}` }}>
-                      <td style={{ padding: '9px 10px', fontSize: 13, fontWeight: 600, color: COLORS.neutral900 }}>{row.flag} {row.name}</td>
-                      <td style={{ padding: '9px 10px' }}>
-                        <span style={{ background: '#FFF8E1', color: '#705E00', padding: '2px 8px', borderRadius: 4, fontSize: 12, fontWeight: 700 }}>{(row.rate * 100).toFixed(1)}%</span>
-                      </td>
-                      <td style={{ padding: '9px 10px', fontSize: 13, fontWeight: 700, color: '#B45309', fontFamily: "'Inter', sans-serif" }}>-${row.total.toFixed(2)}</td>
-                    </tr>
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: 16 }}>
+              <thead>
+                <tr>
+                  {['Country', 'Tax Rate'].map(h => (
+                    <th key={h} style={{ fontSize: 11, fontWeight: 600, color: COLORS.neutral500, textAlign: 'left', padding: '6px 10px', background: COLORS.neutral100, borderBottom: `1px solid ${COLORS.neutral200}` }}>{h}</th>
                   ))}
-                  <tr style={{ borderTop: `2px solid ${COLORS.neutral200}` }}>
-                    <td colSpan={2} style={{ padding: '10px 10px', fontSize: 13, fontWeight: 700, color: COLORS.neutral900 }}>Total Deducted</td>
-                    <td style={{ padding: '10px 10px', fontSize: 13, fontWeight: 700, color: '#B45309', fontFamily: "'Inter', sans-serif" }}>
-                      -${taxBreakdown.reduce((s, r) => s + r.total, 0).toFixed(2)}
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { flag: '🇦🇹', name: 'Austria',        rate: 0.05 },
+                  { flag: '🇫🇷', name: 'France',         rate: 0.03 },
+                  { flag: '🇮🇹', name: 'Italy',          rate: 0.03 },
+                  { flag: '🇪🇸', name: 'Spain',          rate: 0.03 },
+                  { flag: '🇹🇷', name: 'Türkiye',        rate: 0.05 },
+                  { flag: '🇬🇧', name: 'United Kingdom', rate: 0.02 },
+                ].map(row => (
+                  <tr key={row.name} style={{ borderBottom: `1px solid ${COLORS.neutral100}` }}>
+                    <td style={{ padding: '10px 10px', fontSize: 13, fontWeight: 600, color: COLORS.neutral900 }}>{row.flag} {row.name}</td>
+                    <td style={{ padding: '10px 10px' }}>
+                      <span style={{ background: '#FFF8E1', color: '#705E00', padding: '3px 10px', borderRadius: 4, fontSize: 12, fontWeight: 700 }}>{(row.rate * 100).toFixed(1)}%</span>
                     </td>
                   </tr>
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
 
             <div style={{ background: '#F0F3F8', borderRadius: 8, padding: 12, fontSize: 12, color: COLORS.neutral700, lineHeight: 1.6 }}>
-              <strong>How it works:</strong> Meta charges country-based taxes on ad spend. Rockads maintains a tax reserve on your credit account to ensure seamless tax payments. The blocked amount is released or adjusted monthly based on actual spend.
+              <strong>How it works:</strong> Meta charges country-based taxes on ad spend. Rockads maintains a tax reserve on your credit account to ensure seamless tax payments. The blocked amount is released or adjusted based on actual spend.
             </div>
           </div>
         </div>
