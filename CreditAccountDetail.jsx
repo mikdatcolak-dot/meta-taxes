@@ -226,17 +226,17 @@ function CreditAccountDetail({ onSelectAdAccount }) {
           </div>
         </div>
 
-        {/* Tax Reserve Warning Banner */}
+        {/* Tax Reserve Info Banner */}
         <div style={{
           marginTop: 16, padding: '10px 14px',
-          background: '#FFF8E1', border: '1px solid #F3CD02', borderRadius: 6,
+          background: COLORS.neutral100, border: `1px solid ${COLORS.neutral200}`, borderRadius: 6,
           display: 'flex', alignItems: 'center', gap: 10,
-          fontSize: 12, color: '#705E00', lineHeight: 1.5,
+          fontSize: 12, color: COLORS.neutral700, lineHeight: 1.5,
         }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F3CD02" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={COLORS.neutral400} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           <span>
-            <strong>Meta Ad Tax Reserve Active:</strong> A portion of your balance is blocked to cover Meta's country-based ad taxation.
-            Taxes are deducted automatically when ad spend is detected. <span onClick={() => setTaxModalOpen(true)} style={{ textDecoration: 'underline', cursor: 'pointer', fontWeight: 600 }}>View breakdown →</span>
+            <strong style={{ color: COLORS.neutral900 }}>Meta Ad Tax Reserve Active:</strong> A portion of your balance is blocked to cover Meta's country-based ad taxation.
+            Taxes are deducted automatically when ad spend is detected. <span onClick={() => setTaxModalOpen(true)} style={{ textDecoration: 'underline', cursor: 'pointer', fontWeight: 600, color: COLORS.primary }}>View breakdown →</span>
           </span>
         </div>
       </div>
