@@ -44,11 +44,10 @@ function fmt(n) {
 // Ad Spend           → actual tax deducted from block
 // Withdraw           → block -5%  (reserve released on withdrawal)
 const BLOCK_HISTORY = [
-  { date: '20.05.2026', time: '13:05', type: 'Ad Spend',            account: 'Rockads Demo Account', accountId: '32149134619789', txAmount: 2000.00, change: -100.00, balance: 410.00 },
-  { date: '20.05.2026', time: '13:00', type: 'Ad Spend',            account: 'Rockads Demo Account', accountId: '32149134619789', txAmount: 3000.00, change: -90.00,  balance: 510.00 },
-  { date: '15.05.2026', time: '14:00', type: 'Withdraw',            account: 'Rockads Demo Account', accountId: '32149134619789', txAmount: 5000.00, change: -250.00, balance: 600.00 },
-  { date: '10.05.2026', time: '10:00', type: 'Ad Account Transfer', account: 'Rockads Demo Account', accountId: '32149134619789', txAmount: 10000.00, change: +500.00, balance: 850.00 },
-  { date: '05.05.2026', time: '11:30', type: 'Ad Spend',            account: 'Rockads Demo Account', accountId: '32149134619789', txAmount: 5000.00, change: -150.00, balance: 350.00 },
+  { date: '20.05.2026', time: '13:00', type: 'Ad Spend',            account: 'Rockads Demo Account', accountId: '32149134619789', txAmount: 5000.00,  change: -250.00, balance: 250.00 },
+  { date: '15.05.2026', time: '14:00', type: 'Withdraw',            account: 'Rockads Demo Account', accountId: '32149134619789', txAmount: 5000.00,  change: -250.00, balance: 500.00 },
+  { date: '10.05.2026', time: '10:00', type: 'Ad Account Transfer', account: 'Rockads Demo Account', accountId: '32149134619789', txAmount: 10000.00, change: +500.00, balance: 750.00 },
+  { date: '05.05.2026', time: '11:30', type: 'Ad Spend',            account: 'Rockads Demo Account', accountId: '32149134619789', txAmount: 5000.00,  change: -250.00, balance: 250.00 },
   { date: '01.05.2026', time: '09:00', type: 'Ad Account Transfer', account: 'Rockads Demo Account', accountId: '32149134619789', txAmount: 10000.00, change: +500.00, balance: 500.00 },
 ];
 
@@ -153,7 +152,7 @@ function CreditAccountDetail({ onSelectAdAccount }) {
   const [blockHistoryOpen, setBlockHistoryOpen] = React.useState(false);
 
   const totalBalance = 84660.00;
-  const blockedTax = 410.00;
+  const blockedTax = 250.00;
   const available = totalBalance - blockedTax;
 
   const filtered = filter === 'tax'
