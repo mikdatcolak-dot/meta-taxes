@@ -10,7 +10,7 @@ const TAX_RATES = {
 };
 
 const TRANSACTIONS = [
-  { date: '20.05.2026\n13:05', accountName: '#8458 - Rockads Test 01 - PP - RHK', kind: 'Meta Ad Tax', country: 'AT', amount: -100.00, tax: 0, commission: 0, actor: 'System', isTax: true },
+  { date: '20.05.2026\n13:05', accountName: '#8458 - Rockads Test 01 - PP - RHK', kind: 'Meta Ad Tax', country: 'AT', amount: -250.00, tax: 0, commission: 0, actor: 'System', isTax: true },
   { date: '15.05.2026\n14:00', accountName: '#8458 - Rockads Test 01 - PP - RHK', kind: 'Withdraw From Ad Account', country: null, amount: +5000.00, tax: 0, commission: 0, actor: 'Mikdat Çolak', isTax: false },
   { date: '10.05.2026\n10:00', accountName: '#8458 - Rockads Test 01 - PP - RHK', kind: 'Transfer To Ad Account', country: null, amount: -10000.00, tax: 0, commission: 0, actor: 'Mikdat Çolak', isTax: false },
   { date: '05.05.2026\n11:30', accountName: '#4521 - Rockads Demo EU - PP - MTC', kind: 'Meta Ad Tax', country: 'DE', amount: -150.00, tax: 0, commission: 0, actor: 'System', isTax: true },
@@ -92,7 +92,7 @@ function BlockHistoryModal({ onClose, blockedTax, available }) {
         <div style={{ display: 'grid', gridTemplateColumns: '32px 1fr 90px 90px 100px', gap: 12, padding: '8px 24px', background: '#F7F9FB', borderBottom: '1px solid #E5E9EF', alignItems: 'center' }}>
           <div />
           <div style={{ fontSize: 10, fontWeight: 700, color: '#747A8E', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Transaction</div>
-          <div style={{ fontSize: 10, fontWeight: 700, color: '#747A8E', textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'right' }}>Tx Amount</div>
+          <div style={{ fontSize: 10, fontWeight: 700, color: '#747A8E', textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'right' }}>Amount</div>
           <div style={{ fontSize: 10, fontWeight: 700, color: '#747A8E', textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'right' }}>Change</div>
           <div style={{ fontSize: 10, fontWeight: 700, color: '#B45309', textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'right', background: '#FFF8E1', borderRadius: 4, padding: '3px 8px' }}>Block Balance</div>
         </div>
@@ -121,7 +121,7 @@ function BlockHistoryModal({ onClose, blockedTax, available }) {
                   <div style={{ fontSize: 10, color: '#898FA5', marginTop: 1, fontFamily: "'Inter', sans-serif" }}>{entry.date} {entry.time}</div>
                 </div>
 
-                {/* Tx Amount */}
+                {/* Amount */}
                 <div style={{ textAlign: 'right', fontSize: 13, color: '#4B5061', fontFamily: "'Inter', sans-serif" }}>
                   ${entry.txAmount.toFixed(2)}
                 </div>
@@ -150,7 +150,7 @@ function CreditAccountDetail({ onSelectAdAccount }) {
   const [taxModalOpen, setTaxModalOpen] = React.useState(false);
   const [blockHistoryOpen, setBlockHistoryOpen] = React.useState(false);
 
-  const totalBalance = 84750.00;
+  const totalBalance = 84600.00;
   const blockedTax = 250.00;
   const available = totalBalance - blockedTax;
 
