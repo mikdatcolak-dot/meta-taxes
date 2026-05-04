@@ -1,21 +1,14 @@
 // Rockads — Ad Account Detail (with Meta Taxes tab)
 
 const TAX_SPEND_DATA = [
-  { date: '19.04.2026', country: 'DE', flag: '🇩🇪', countryName: 'Germany', spend: 100.00, rate: 0.03, tax: 3.00 },
-  { date: '19.04.2026', country: 'AT', flag: '🇦🇹', countryName: 'Austria', spend: 100.00, rate: 0.05, tax: 5.00 },
-  { date: '17.04.2026', country: 'GB', flag: '🇬🇧', countryName: 'United Kingdom', spend: 100.00, rate: 0.02, tax: 2.00 },
-  { date: '10.04.2026', country: 'FR', flag: '🇫🇷', countryName: 'France', spend: 200.00, rate: 0.025, tax: 5.00 },
-  { date: '03.04.2026', country: 'NL', flag: '🇳🇱', countryName: 'Netherlands', spend: 150.00, rate: 0.02, tax: 3.00 },
-  { date: '28.03.2026', country: 'DE', flag: '🇩🇪', countryName: 'Germany', spend: 340.00, rate: 0.03, tax: 10.20 },
-  { date: '15.03.2026', country: 'GB', flag: '🇬🇧', countryName: 'United Kingdom', spend: 500.00, rate: 0.02, tax: 10.00 },
-  { date: '01.03.2026', country: 'AT', flag: '🇦🇹', countryName: 'Austria', spend: 80.00, rate: 0.05, tax: 4.00 },
+  { date: '20.05.2026', country: 'AT', flag: '🇦🇹', countryName: 'Austria', spend: 2000.00, rate: 0.05, tax: 100.00 },
+  { date: '20.05.2026', country: 'DE', flag: '🇩🇪', countryName: 'Germany', spend: 3000.00, rate: 0.03, tax: 90.00 },
+  { date: '05.05.2026', country: 'DE', flag: '🇩🇪', countryName: 'Germany', spend: 5000.00, rate: 0.03, tax: 150.00 },
 ];
 
 const AD_SPEND_DATA = [
-  { spend: '$0,22', impression: 403, clicks: 86, ctr: 21.34, reach: 395, uniqueClicks: 82, date: '08.05.2024' },
-  { spend: '$1,57', impression: 3507, clicks: 692, ctr: 19.73, reach: 3395, uniqueClicks: 663, date: '07.05.2024' },
-  { spend: '$3,57', impression: 8906, clicks: 1427, ctr: 16.02, reach: 8354, uniqueClicks: 1363, date: '06.05.2024' },
-  { spend: '$12,40', impression: 22100, clicks: 3850, ctr: 17.42, reach: 20100, uniqueClicks: 3600, date: '05.05.2024' },
+  { spend: '$5.000,00', impression: 312400, clicks: 8640, ctr: 2.77, reach: 290000, uniqueClicks: 8200, date: '20.05.2026' },
+  { spend: '$5.000,00', impression: 298700, clicks: 7920, ctr: 2.65, reach: 275000, uniqueClicks: 7500, date: '05.05.2026' },
 ];
 
 function AdAccountDetail({ account, onBack }) {
@@ -83,7 +76,7 @@ function AdAccountDetail({ account, onBack }) {
           <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${COLORS.neutral100}` }}>
             <div style={{ fontSize: 12, color: COLORS.neutral500, marginBottom: 4 }}>Current balance</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-              <span style={{ fontSize: 32, fontWeight: 700, color: COLORS.neutral900 }}>$651,00</span>
+              <span style={{ fontSize: 32, fontWeight: 700, color: COLORS.neutral900 }}>$5.000,00</span>
               <button style={{ height: 36, padding: '0 14px', background: COLORS.primary, border: 'none', borderRadius: 8, fontFamily: "'Red Hat Display', sans-serif", fontSize: 13, fontWeight: 600, color: '#fff', cursor: 'pointer' }}>+ Add Balance</button>
             </div>
             <div style={{ fontSize: 12, color: COLORS.primary, marginTop: 8, cursor: 'pointer', fontWeight: 500 }}>Transfer To Credit Account</div>

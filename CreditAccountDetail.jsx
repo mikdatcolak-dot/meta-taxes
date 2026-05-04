@@ -10,13 +10,12 @@ const TAX_RATES = {
 };
 
 const TRANSACTIONS = [
-  { date: '19.04.2026\n14:55', accountName: 'Rockads B2B – CR', accountId: '32149134619789', kind: 'Meta Ad Tax', country: 'DE', amount: -3.00, tax: 0, commission: 0, actor: 'System', isTax: true },
-  { date: '19.04.2026\n14:55', accountName: 'Rockads B2B – CR', accountId: '32149134619789', kind: 'Meta Ad Tax', country: 'AT', amount: -5.00, tax: 0, commission: 0, actor: 'System', isTax: true },
-  { date: '18.04.2026\n11:30', accountName: 'Test – GMT+3 – USD', accountId: '1448789212354931', kind: 'Transfer To Ad Account', country: null, amount: -100.00, tax: 0, commission: -5.00, actor: 'Suat Invite Test 1', isTax: false },
-  { date: '17.04.2026\n09:12', accountName: 'Test – GMT+3 – USD', accountId: '1448789212354931', kind: 'Meta Ad Tax', country: 'GB', amount: -2.00, tax: 0, commission: 0, actor: 'System', isTax: true },
-  { date: '02.02.2026\n22:23', accountName: 'Test – GMT+3 – USD', accountId: '1448789212354931', kind: 'Withdraw From Ad Account', country: null, amount: +100.00, tax: 0, commission: +5.00, actor: 'Suat Invite Test 1', isTax: false },
-  { date: '02.02.2026\n22:22', accountName: 'Test – GMT+3 – USD', accountId: '1448789212354931', kind: 'Transfer To Ad Account', country: null, amount: -100.00, tax: 0, commission: -5.00, actor: 'Suat Invite Test 1', isTax: false },
-  { date: '15.01.2026\n15:38', accountName: 'Test – GMT+3 – USD', accountId: '1448789212354931', kind: 'Transfer To Ad Account', country: null, amount: -30.00, tax: 0, commission: -1.50, actor: 'Rockads Team', isTax: false },
+  { date: '20.05.2026\n13:05', accountName: 'Rockads Demo Account', accountId: '32149134619789', kind: 'Meta Ad Tax', country: 'AT', amount: -100.00, tax: 0, commission: 0, actor: 'System', isTax: true },
+  { date: '20.05.2026\n13:00', accountName: 'Rockads Demo Account', accountId: '32149134619789', kind: 'Meta Ad Tax', country: 'DE', amount: -90.00, tax: 0, commission: 0, actor: 'System', isTax: true },
+  { date: '15.05.2026\n14:00', accountName: 'Rockads Demo Account', accountId: '32149134619789', kind: 'Withdraw From Ad Account', country: null, amount: +5000.00, tax: 0, commission: 0, actor: 'Mikdat Çolak', isTax: false },
+  { date: '10.05.2026\n10:00', accountName: 'Rockads Demo Account', accountId: '32149134619789', kind: 'Transfer To Ad Account', country: null, amount: -10000.00, tax: 0, commission: 0, actor: 'Mikdat Çolak', isTax: false },
+  { date: '05.05.2026\n11:30', accountName: 'Rockads Demo Account', accountId: '32149134619789', kind: 'Meta Ad Tax', country: 'DE', amount: -150.00, tax: 0, commission: 0, actor: 'System', isTax: true },
+  { date: '01.05.2026\n09:00', accountName: 'Rockads Demo Account', accountId: '32149134619789', kind: 'Transfer To Ad Account', country: null, amount: -10000.00, tax: 0, commission: 0, actor: 'Mikdat Çolak', isTax: false },
 ];
 
 function TaxBadge({ country }) {
@@ -42,21 +41,15 @@ function fmt(n) {
 
 // 5% of transaction amount rule:
 // Ad Account Transfer → block +5%  (reserve grows)
-// Ad Spend           → block -5%  (reserve released on spend)
+// Ad Spend           → actual tax deducted from block
 // Withdraw           → block -5%  (reserve released on withdrawal)
 const BLOCK_HISTORY = [
-  { date: '19.04.2026', time: '14:55', type: 'Ad Spend',            account: 'Rockads B2B – CR',      accountId: '32149134619789',   txAmount: 100.00, change: -5.00,  balance: 487.35 },
-  { date: '19.04.2026', time: '14:50', type: 'Ad Spend',            account: 'Rockads B2B – CR',      accountId: '32149134619789',   txAmount: 100.00, change: -5.00,  balance: 492.35 },
-  { date: '18.04.2026', time: '11:30', type: 'Ad Account Transfer', account: 'Test – GMT+3 – USD',    accountId: '1448789212354931', txAmount: 100.00, change: +5.00,  balance: 497.35 },
-  { date: '17.04.2026', time: '09:12', type: 'Ad Spend',            account: 'Test – GMT+3 – USD',    accountId: '1448789212354931', txAmount: 100.00, change: -5.00,  balance: 492.35 },
-  { date: '10.04.2026', time: '16:40', type: 'Ad Account Transfer', account: 'Test – GMT+3 – USD',    accountId: '1448789212354931', txAmount: 200.00, change: +10.00, balance: 497.35 },
-  { date: '03.04.2026', time: '10:05', type: 'Ad Spend',            account: 'Test – GMT+3 – USD',    accountId: '1448789212354931', txAmount: 150.00, change: -7.50,  balance: 487.35 },
-  { date: '28.03.2026', time: '09:00', type: 'Ad Spend',            account: 'Test – GMT+3 – USD',    accountId: '1448789212354931', txAmount: 340.00, change: -17.00, balance: 494.85 },
-  { date: '15.03.2026', time: '14:20', type: 'Ad Spend',            account: 'Rockads B2B – CR',      accountId: '32149134619789',   txAmount: 500.00, change: -25.00, balance: 511.85 },
-  { date: '01.03.2026', time: '10:30', type: 'Ad Spend',            account: 'Rockads B2B – CR',      accountId: '32149134619789',   txAmount: 80.00,  change: -4.00,  balance: 536.85 },
-  { date: '02.02.2026', time: '22:23', type: 'Withdraw',            account: 'Test – GMT+3 – USD',    accountId: '1448789212354931', txAmount: 100.00, change: -5.00,  balance: 540.85 },
-  { date: '02.02.2026', time: '22:22', type: 'Ad Account Transfer', account: 'Test – GMT+3 – USD',    accountId: '1448789212354931', txAmount: 100.00, change: +5.00,  balance: 545.85 },
-  { date: '15.01.2026', time: '15:38', type: 'Ad Account Transfer', account: 'Test – GMT+3 – USD',    accountId: '1448789212354931', txAmount: 30.00,  change: +1.50,  balance: 540.85 },
+  { date: '20.05.2026', time: '13:05', type: 'Ad Spend',            account: 'Rockads Demo Account', accountId: '32149134619789', txAmount: 2000.00, change: -100.00, balance: 410.00 },
+  { date: '20.05.2026', time: '13:00', type: 'Ad Spend',            account: 'Rockads Demo Account', accountId: '32149134619789', txAmount: 3000.00, change: -90.00,  balance: 510.00 },
+  { date: '15.05.2026', time: '14:00', type: 'Withdraw',            account: 'Rockads Demo Account', accountId: '32149134619789', txAmount: 5000.00, change: -250.00, balance: 600.00 },
+  { date: '10.05.2026', time: '10:00', type: 'Ad Account Transfer', account: 'Rockads Demo Account', accountId: '32149134619789', txAmount: 10000.00, change: +500.00, balance: 850.00 },
+  { date: '05.05.2026', time: '11:30', type: 'Ad Spend',            account: 'Rockads Demo Account', accountId: '32149134619789', txAmount: 5000.00, change: -150.00, balance: 350.00 },
+  { date: '01.05.2026', time: '09:00', type: 'Ad Account Transfer', account: 'Rockads Demo Account', accountId: '32149134619789', txAmount: 10000.00, change: +500.00, balance: 500.00 },
 ];
 
 const TYPE_CONFIG = {
@@ -159,8 +152,8 @@ function CreditAccountDetail({ onSelectAdAccount }) {
   const [taxModalOpen, setTaxModalOpen] = React.useState(false);
   const [blockHistoryOpen, setBlockHistoryOpen] = React.useState(false);
 
-  const totalBalance = 9760.98;
-  const blockedTax = 487.35;
+  const totalBalance = 84660.00;
+  const blockedTax = 410.00;
   const available = totalBalance - blockedTax;
 
   const filtered = filter === 'tax'
