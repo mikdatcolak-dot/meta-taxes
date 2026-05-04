@@ -10,12 +10,12 @@ const TAX_RATES = {
 };
 
 const TRANSACTIONS = [
-  { date: '20.05.2026\n13:05', accountName: 'Rockads Demo Account', accountId: '32149134619789', kind: 'Meta Ad Tax', country: 'AT', amount: -100.00, tax: 0, commission: 0, actor: 'System', isTax: true },
-  { date: '20.05.2026\n13:00', accountName: 'Rockads Demo Account', accountId: '32149134619789', kind: 'Meta Ad Tax', country: 'DE', amount: -90.00, tax: 0, commission: 0, actor: 'System', isTax: true },
-  { date: '15.05.2026\n14:00', accountName: 'Rockads Demo Account', accountId: '32149134619789', kind: 'Withdraw From Ad Account', country: null, amount: +5000.00, tax: 0, commission: 0, actor: 'Mikdat Çolak', isTax: false },
-  { date: '10.05.2026\n10:00', accountName: 'Rockads Demo Account', accountId: '32149134619789', kind: 'Transfer To Ad Account', country: null, amount: -10000.00, tax: 0, commission: 0, actor: 'Mikdat Çolak', isTax: false },
-  { date: '05.05.2026\n11:30', accountName: 'Rockads Demo Account', accountId: '32149134619789', kind: 'Meta Ad Tax', country: 'DE', amount: -150.00, tax: 0, commission: 0, actor: 'System', isTax: true },
-  { date: '01.05.2026\n09:00', accountName: 'Rockads Demo Account', accountId: '32149134619789', kind: 'Transfer To Ad Account', country: null, amount: -10000.00, tax: 0, commission: 0, actor: 'Mikdat Çolak', isTax: false },
+  { date: '20.05.2026\n13:05', accountName: '#8458 - Rockads Test 01 - PP - RHK', kind: 'Meta Ad Tax', country: 'AT', amount: -100.00, tax: 0, commission: 0, actor: 'System', isTax: true },
+  { date: '20.05.2026\n13:00', accountName: '#8458 - Rockads Test 01 - PP - RHK', kind: 'Meta Ad Tax', country: 'DE', amount: -90.00, tax: 0, commission: 0, actor: 'System', isTax: true },
+  { date: '15.05.2026\n14:00', accountName: '#8458 - Rockads Test 01 - PP - RHK', kind: 'Withdraw From Ad Account', country: null, amount: +5000.00, tax: 0, commission: 0, actor: 'Mikdat Çolak', isTax: false },
+  { date: '10.05.2026\n10:00', accountName: '#8458 - Rockads Test 01 - PP - RHK', kind: 'Transfer To Ad Account', country: null, amount: -10000.00, tax: 0, commission: 0, actor: 'Mikdat Çolak', isTax: false },
+  { date: '05.05.2026\n11:30', accountName: '#4521 - Rockads Demo EU - PP - MTC', kind: 'Meta Ad Tax', country: 'DE', amount: -150.00, tax: 0, commission: 0, actor: 'System', isTax: true },
+  { date: '01.05.2026\n09:00', accountName: '#4521 - Rockads Demo EU - PP - MTC', kind: 'Transfer To Ad Account', country: null, amount: -10000.00, tax: 0, commission: 0, actor: 'Mikdat Çolak', isTax: false },
 ];
 
 function TaxBadge({ country }) {
@@ -44,11 +44,11 @@ function fmt(n) {
 // Ad Spend           → actual tax deducted from block
 // Withdraw           → block -5%  (reserve released on withdrawal)
 const BLOCK_HISTORY = [
-  { date: '20.05.2026', time: '13:00', type: 'Ad Spend',            account: 'Rockads Demo Account', accountId: '32149134619789', txAmount: 5000.00,  change: -250.00, balance: 250.00 },
-  { date: '15.05.2026', time: '14:00', type: 'Withdraw',            account: 'Rockads Demo Account', accountId: '32149134619789', txAmount: 5000.00,  change: -250.00, balance: 500.00 },
-  { date: '10.05.2026', time: '10:00', type: 'Ad Account Transfer', account: 'Rockads Demo Account', accountId: '32149134619789', txAmount: 10000.00, change: +500.00, balance: 750.00 },
-  { date: '05.05.2026', time: '11:30', type: 'Ad Spend',            account: 'Rockads Demo Account', accountId: '32149134619789', txAmount: 5000.00,  change: -250.00, balance: 250.00 },
-  { date: '01.05.2026', time: '09:00', type: 'Ad Account Transfer', account: 'Rockads Demo Account', accountId: '32149134619789', txAmount: 10000.00, change: +500.00, balance: 500.00 },
+  { date: '20.05.2026', time: '13:00', type: 'Ad Spend',            account: '#8458 - Rockads Test 01 - PP - RHK', txAmount: 5000.00,  change: -250.00, balance: 250.00 },
+  { date: '15.05.2026', time: '14:00', type: 'Withdraw',            account: '#8458 - Rockads Test 01 - PP - RHK', txAmount: 5000.00,  change: -250.00, balance: 500.00 },
+  { date: '10.05.2026', time: '10:00', type: 'Ad Account Transfer', account: '#8458 - Rockads Test 01 - PP - RHK', txAmount: 10000.00, change: +500.00, balance: 750.00 },
+  { date: '05.05.2026', time: '11:30', type: 'Ad Spend',            account: '#4521 - Rockads Demo EU - PP - MTC', txAmount: 5000.00,  change: -250.00, balance: 250.00 },
+  { date: '01.05.2026', time: '09:00', type: 'Ad Account Transfer', account: '#4521 - Rockads Demo EU - PP - MTC', txAmount: 10000.00, change: +500.00, balance: 500.00 },
 ];
 
 const TYPE_CONFIG = {
@@ -117,7 +117,7 @@ function BlockHistoryModal({ onClose, blockedTax, available }) {
                     <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 4, background: cfg.bg, color: cfg.color }}>{entry.type === 'Ad Account Transfer' ? 'Transfer' : entry.type === 'Ad Spend' ? 'Spend' : 'Withdraw'}</span>
                   </div>
                   <div style={{ fontSize: 11, color: '#747A8E', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {entry.account} · <span style={{ fontFamily: "'Inter', sans-serif" }}>{entry.accountId}</span>
+                    {entry.account}
                   </div>
                   <div style={{ fontSize: 10, color: '#898FA5', marginTop: 1, fontFamily: "'Inter', sans-serif" }}>{entry.date} {entry.time}</div>
                 </div>
@@ -277,7 +277,7 @@ function CreditAccountDetail({ onSelectAdAccount }) {
               <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 900 }}>
                 <thead>
                   <tr>
-                    {['TRANSACTION DATE', 'ACCOUNT NAME', 'ACCOUNT ID', 'KIND', 'COUNTRY / TAX', 'AMOUNT', 'TAX & FEES', 'COMMISSION', 'ACTOR', 'ACTIONS'].map(h => (
+                    {['TRANSACTION DATE', 'ACCOUNT NAME', 'KIND', 'COUNTRY / TAX', 'AMOUNT', 'TAX & FEES', 'COMMISSION', 'ACTOR', 'ACTIONS'].map(h => (
                       <th key={h} style={{ fontSize: 10, fontWeight: 700, color: COLORS.neutral500, textTransform: 'uppercase', letterSpacing: '0.05em', padding: '8px 12px', textAlign: 'left', background: COLORS.neutral100, borderBottom: `1px solid ${COLORS.neutral200}`, whiteSpace: 'nowrap' }}>{h}</th>
                     ))}
                   </tr>
@@ -290,8 +290,7 @@ function CreditAccountDetail({ onSelectAdAccount }) {
                         <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.neutral900 }}>{tx.accountName}</div>
                         {tx.isTax && <div style={{ fontSize: 10, color: COLORS.neutral400 }}>Auto-deducted</div>}
                       </td>
-                      <td style={{ padding: '10px 12px', fontSize: 12, fontFamily: "'Inter', sans-serif", color: COLORS.neutral500 }}>{tx.accountId}</td>
-                      <td style={{ padding: '10px 12px' }}>
+<td style={{ padding: '10px 12px' }}>
                         {tx.isTax ? (
                           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '3px 8px', borderRadius: 4, background: '#FFF8E1', color: '#705E00', fontSize: 12, fontWeight: 600, border: '1px solid #F3CD0250' }}>
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#F3CD02" strokeWidth="2.5"><path d="M9 14l2 2 4-4"/><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
