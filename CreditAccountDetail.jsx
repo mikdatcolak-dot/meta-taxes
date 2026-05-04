@@ -11,7 +11,6 @@ const TAX_RATES = {
 
 const TRANSACTIONS = [
   { date: '20.05.2026\n13:05', accountName: '#8458 - Rockads Test 01 - PP - RHK', kind: 'Meta Ad Tax', country: 'AT', amount: -100.00, tax: 0, commission: 0, actor: 'System', isTax: true },
-  { date: '20.05.2026\n13:00', accountName: '#8458 - Rockads Test 01 - PP - RHK', kind: 'Meta Ad Tax', country: 'DE', amount: -90.00, tax: 0, commission: 0, actor: 'System', isTax: true },
   { date: '15.05.2026\n14:00', accountName: '#8458 - Rockads Test 01 - PP - RHK', kind: 'Withdraw From Ad Account', country: null, amount: +5000.00, tax: 0, commission: 0, actor: 'Mikdat Çolak', isTax: false },
   { date: '10.05.2026\n10:00', accountName: '#8458 - Rockads Test 01 - PP - RHK', kind: 'Transfer To Ad Account', country: null, amount: -10000.00, tax: 0, commission: 0, actor: 'Mikdat Çolak', isTax: false },
   { date: '05.05.2026\n11:30', accountName: '#4521 - Rockads Demo EU - PP - MTC', kind: 'Meta Ad Tax', country: 'DE', amount: -150.00, tax: 0, commission: 0, actor: 'System', isTax: true },
@@ -35,7 +34,7 @@ function TaxBadge({ country }) {
 
 function fmt(n) {
   if (n === 0) return '$0,00';
-  const sign = n > 0 ? '+' : '';
+  const sign = n > 0 ? '+' : '-';
   return sign + '$' + Math.abs(n).toFixed(2).replace('.', ',');
 }
 
@@ -151,7 +150,7 @@ function CreditAccountDetail({ onSelectAdAccount }) {
   const [taxModalOpen, setTaxModalOpen] = React.useState(false);
   const [blockHistoryOpen, setBlockHistoryOpen] = React.useState(false);
 
-  const totalBalance = 84660.00;
+  const totalBalance = 84750.00;
   const blockedTax = 250.00;
   const available = totalBalance - blockedTax;
 

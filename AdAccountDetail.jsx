@@ -2,7 +2,6 @@
 
 const TAX_SPEND_DATA = [
   { date: '20.05.2026', country: 'AT', flag: '🇦🇹', countryName: 'Austria', spend: 2000.00, rate: 0.05, tax: 100.00 },
-  { date: '20.05.2026', country: 'DE', flag: '🇩🇪', countryName: 'Germany', spend: 3000.00, rate: 0.03, tax: 90.00 },
   { date: '05.05.2026', country: 'DE', flag: '🇩🇪', countryName: 'Germany', spend: 5000.00, rate: 0.03, tax: 150.00 },
 ];
 
