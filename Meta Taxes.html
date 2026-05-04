@@ -23,6 +23,7 @@
 
 <script type="text/babel" src="Components.jsx"></script>
 <script type="text/babel" src="CreditAccountDetail.jsx"></script>
+<script type="text/babel" src="AdAccountList.jsx"></script>
 <script type="text/babel" src="AdAccountDetail.jsx"></script>
 
 <script type="text/babel">
@@ -43,18 +44,25 @@ const NAV_ITEMS = [
 ];
 
 const SCREEN_META = {
-  'credit-account-detail': { title: 'Account Detail', breadcrumb: 'Credit Accounts', nav: 'credit-accounts' },
-  'ad-account-detail':     { title: 'Ad Account Detail', breadcrumb: 'Ad Accounts', nav: 'ad-accounts' },
+  'credit-account-detail': { title: 'Account Detail',  breadcrumb: 'Credit Accounts', nav: 'credit-accounts' },
+  'ad-account-list':       { title: 'Ad Accounts',     breadcrumb: null,              nav: 'ad-accounts' },
+  'ad-account-detail':     { title: 'Account Detail',  breadcrumb: 'Ad Accounts',     nav: 'ad-accounts' },
 };
 
 function AppShell() {
   const saved = (() => { try { return JSON.parse(localStorage.getItem('rockads_tax_state') || '{}'); } catch { return {}; } })();
   const [screen, setScreen] = React.useState(saved.screen || TWEAK_DEFAULTS.startScreen);
+  const [selectedAccount, setSelectedAccount] = React.useState(null);
   const [tweaksVisible, setTweaksVisible] = React.useState(false);
 
   const persist = s => localStorage.setItem('rockads_tax_state', JSON.stringify({ screen: s }));
 
   const navigate = s => { setScreen(s); persist(s); };
+
+  const openAccount = acc => {
+    setSelectedAccount(acc);
+    navigate('ad-account-detail');
+  };
 
   React.useEffect(() => {
     const handler = e => {
@@ -71,7 +79,8 @@ function AppShell() {
 
   const renderContent = () => {
     if (screen === 'credit-account-detail') return <CreditAccountDetail />;
-    if (screen === 'ad-account-detail') return <AdAccountDetail />;
+    if (screen === 'ad-account-list') return <AdAccountList onSelectAccount={openAccount} />;
+    if (screen === 'ad-account-detail') return <AdAccountDetail account={selectedAccount || AD_ACCOUNTS_DATA[0]} onBack={() => navigate('ad-account-list')} />;
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#898FA5', fontSize: 14 }}>
         <div style={{ textAlign: 'center' }}>
@@ -95,7 +104,7 @@ function AppShell() {
             const isActive = activeNav === item.id;
             return (
               <div key={item.id} onClick={() => {
-                if (item.id === 'ad-accounts') navigate('ad-account-detail');
+                if (item.id === 'ad-accounts') navigate('ad-account-list');
                 else if (item.id === 'credit-accounts') navigate('credit-account-detail');
                 else navigate(item.id);
               }} style={{
@@ -124,7 +133,7 @@ function AppShell() {
         <div style={{ height: 56, background: '#fff', borderBottom: '1px solid #E5E9EF', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', flexShrink: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             {meta.breadcrumb && <>
-              <span style={{ fontSize: 14, color: '#747A8E', cursor: 'pointer' }} onClick={() => navigate(meta.nav === 'ad-accounts' ? 'ad-account-detail' : 'credit-account-detail')}>{meta.breadcrumb}</span>
+              <span style={{ fontSize: 14, color: '#747A8E', cursor: 'pointer' }} onClick={() => navigate(meta.nav === 'ad-accounts' ? 'ad-account-list' : 'credit-account-detail')}>{meta.breadcrumb}</span>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C0C7DC" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
             </>}
             <span style={{ fontSize: 16, fontWeight: 700, color: '#151B26' }}>{meta.title}</span>
@@ -132,12 +141,12 @@ function AppShell() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             {/* Screen switcher pills */}
             <div style={{ display: 'flex', gap: 6, background: '#F7F9FB', borderRadius: 8, padding: 4, border: '1px solid #E5E9EF' }}>
-              {[['credit-account-detail', 'Credit Account'], ['ad-account-detail', 'Ad Account']].map(([s, label]) => (
+              {[['credit-account-detail', 'Credit Account'], ['ad-account-list', 'Ad Accounts']].map(([s, label]) => (
                 <button key={s} onClick={() => navigate(s)} style={{
                   height: 28, padding: '0 12px', borderRadius: 6, border: 'none',
-                  background: screen === s ? '#fff' : 'transparent',
-                  boxShadow: screen === s ? '0 1px 3px rgba(21,27,38,0.10)' : 'none',
-                  color: screen === s ? '#007CE1' : '#747A8E',
+                  background: (screen === s || (s === 'ad-account-list' && screen === 'ad-account-detail')) ? '#fff' : 'transparent',
+                  boxShadow: (screen === s || (s === 'ad-account-list' && screen === 'ad-account-detail')) ? '0 1px 3px rgba(21,27,38,0.10)' : 'none',
+                  color: (screen === s || (s === 'ad-account-list' && screen === 'ad-account-detail')) ? '#007CE1' : '#747A8E',
                   fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: "'Red Hat Display', sans-serif",
                   transition: 'all 0.15s',
                 }}>{label}</button>

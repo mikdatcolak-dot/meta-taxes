@@ -1,18 +1,11 @@
 // Rockads — Ad Account Detail (with Meta Taxes tab)
 
-const TAX_SPEND_DATA = [
-  { date: '20.05.2026', country: 'AT', flag: '🇦🇹', countryName: 'Austria', spend: 5000.00, rate: 0.05, tax: 250.00 },
-  { date: '05.05.2026', country: 'DE', flag: '🇩🇪', countryName: 'Germany', spend: 5000.00, rate: 0.03, tax: 150.00 },
-];
-
-const AD_SPEND_DATA = [
-  { spend: '$5.000,00', impression: 312400, clicks: 8640, ctr: 2.77, reach: 290000, uniqueClicks: 8200, date: '20.05.2026' },
-  { spend: '$5.000,00', impression: 298700, clicks: 7920, ctr: 2.65, reach: 275000, uniqueClicks: 7500, date: '05.05.2026' },
-];
-
 function AdAccountDetail({ account, onBack }) {
   const [activeTab, setActiveTab] = React.useState('Ad Spend');
   const tabs = ['Transactions', 'Settings', 'Additional Info', 'Ad Spend', 'Meta Taxes'];
+
+  const TAX_SPEND_DATA = account?.taxData || [];
+  const AD_SPEND_DATA = account?.adSpendData || [];
 
   // Trust score gauge
   const score = 62;
@@ -32,7 +25,7 @@ function AdAccountDetail({ account, onBack }) {
 
   const totalTax = TAX_SPEND_DATA.reduce((s, r) => s + r.tax, 0);
   const totalSpend = TAX_SPEND_DATA.reduce((s, r) => s + r.spend, 0);
-  const effectiveRate = totalTax / totalSpend * 100;
+  const effectiveRate = totalSpend > 0 ? totalTax / totalSpend * 100 : 0;
 
   // Aggregate by country
   const byCountry = Object.values(
@@ -62,20 +55,19 @@ function AdAccountDetail({ account, onBack }) {
                   <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#05CC85' }} />Active
                 </span>
               </div>
-              <div style={{ fontSize: 12, color: COLORS.neutral500 }}>ID: 32149134619789</div>
+              <div style={{ fontSize: 12, color: COLORS.neutral500 }}>BM ID: {account?.bmId || '—'}</div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'flex-end' }}>
               <div style={{ fontSize: 12, color: COLORS.primary, fontWeight: 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>Ads Manager <Icon name="arrowRight" size={11} color={COLORS.primary} /></div>
-              <div style={{ fontSize: 11, color: COLORS.neutral500 }}>BM ID: 3195248127164882</div>
-              <div style={{ fontSize: 12, color: COLORS.primary, fontWeight: 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>Credit Account: bobolo <Icon name="arrowRight" size={11} color={COLORS.primary} /></div>
-              <div style={{ fontSize: 11, color: COLORS.neutral500 }}>ID: 095244</div>
+              <div style={{ fontSize: 12, color: COLORS.primary, fontWeight: 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>Credit Account: {account?.creditAccount || 'Main Wallet'} <Icon name="arrowRight" size={11} color={COLORS.primary} /></div>
+              <div style={{ fontSize: 11, color: COLORS.neutral500 }}>ID: {account?.creditAccountId || '—'}</div>
             </div>
           </div>
 
           <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${COLORS.neutral100}` }}>
             <div style={{ fontSize: 12, color: COLORS.neutral500, marginBottom: 4 }}>Current balance</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-              <span style={{ fontSize: 32, fontWeight: 700, color: COLORS.neutral900 }}>$5.000,00</span>
+              <span style={{ fontSize: 32, fontWeight: 700, color: COLORS.neutral900 }}>${(account?.balance ?? 0).toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</span>
               <button style={{ height: 36, padding: '0 14px', background: COLORS.primary, border: 'none', borderRadius: 8, fontFamily: "'Red Hat Display', sans-serif", fontSize: 13, fontWeight: 600, color: '#fff', cursor: 'pointer' }}>+ Add Balance</button>
             </div>
             <div style={{ fontSize: 12, color: COLORS.primary, marginTop: 8, cursor: 'pointer', fontWeight: 500 }}>Transfer To Credit Account</div>
